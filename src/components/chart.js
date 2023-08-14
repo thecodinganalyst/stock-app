@@ -6,7 +6,8 @@ import {Button} from "@mui/material";
 
 export default function Chart({
                                   dataSets = new Map(),
-                                  xTimestampSets: timestamps = [],
+                                  timestamps = [],
+                                  labels = [],
                                   width = 800,
                                   height = 400,
                                   marginTop = 20,
@@ -101,9 +102,9 @@ export default function Chart({
                 <g transform={`translate(${marginLeft}, 0)`}>
                     <g ref={node => d3.select(node).call(yAxis)} />
                 </g>
-                {Array.from(dataSets.entries()).map(([key, data], idx) => {
-                    const colorKeys = Object.keys(colors);
-                    const color = colors[colorKeys[idx % colorKeys.length]];
+                {Array.from(dataSets.entries()).map(([key, data]) => {
+                    const colorIdx = labels.indexOf(key);
+                    const color = colors[colorIdx];
 
                     return (
                         <g key={`dataSet-${key}`}>
@@ -113,16 +114,6 @@ export default function Chart({
                                 strokeWidth="1.5"
                                 d={line(data)}
                             />
-                            <g fill="white" stroke={color} strokeWidth="1.5">
-                                {data.map((d, i) => (
-                                    <circle
-                                        key={i}
-                                        cx={x(timestampDates[i])}
-                                        cy={y(d)}
-                                        r="2.5"
-                                    />
-                                ))}
-                            </g>
                         </g>
                     )
                 })}
